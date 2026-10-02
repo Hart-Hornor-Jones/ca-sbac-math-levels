@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+</head><body>
+<title>SBAC Math Level Histograms</title>
+<style>
+/* Layout: one left-aligned column; four figures, each = title, a row of dropdowns, the chart. Notes live in one closed box at the bottom. Leal-inspired house format, light only by design. */
+:root{--ink:#000;--paper:#fff;--muted:#555;--l1:#FB0207;--l2:#FF9EA0;--l3:#9C9CFF;--l4:#0000FF;--rule:#000;
+--sans:'Helvetica Neue',Helvetica,Arial,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-weight:700}
+.page{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:24px 48px}
+h1{font-size:24px;line-height:1.3;margin:0 0 4px;text-wrap:balance}
+.sub{font-size:14px;margin:0 0 14px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;margin:0 0 30px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:16px;height:12px;border:1.5px solid var(--rule)}
+.fig{margin:0 0 56px}
+.figtitle{font-size:18px;line-height:1.3;margin:0 0 8px}
+.ctls{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:0 0 12px;font-size:12.5px}
+.ctls label{display:flex;gap:6px;align-items:center}
+.ctls [hidden]{display:none!important}
+select,input[type=text]{font:inherit;font-size:12.5px;border:2px solid var(--rule);background:var(--paper);color:var(--ink);padding:3px 4px;width:auto;max-width:100%}
+input[type=text]{width:330px}
+#dP1,#dP2,#dP3{max-width:230px}
+select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--l4);outline-offset:1px}
+.multiples{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:16px 18px}
+.panels{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px 24px}
+.panels.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pt{font-size:13px;margin:0 0 3px;line-height:1.3}
+.pt small{font-size:11.5px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:var(--sans);font-weight:700;fill:var(--ink)}
+.fine{font-size:11.5px;line-height:1.5;margin:8px 0 0;max-width:780px}
+details{border:2.5px solid var(--rule);padding:10px 14px;max-width:820px;font-size:12.5px;line-height:1.55}
+summary{cursor:pointer;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+details h3{font-size:13px;margin:14px 0 4px}
+details p{margin:0 0 8px}
+#tip{position:fixed;display:none;background:var(--paper);border:2.5px solid var(--rule);padding:8px 11px;font-size:12px;line-height:1.5;pointer-events:none;z-index:50;max-width:290px}
+#loading{font-size:13px;margin:20px 0}
+@media(max-width:760px){.panels.two{grid-template-columns:1fr}input[type=text]{width:100%}}
+</style>
+<div class="page">
+<h1>SBAC math achievement levels, California, 2015–2025</h1>
+<p class="sub">Share of tested students at each of the four levels. Grade 11 unless noted.</p>
+<div class="legend" id="legendTop"></div>
+<div id="loading">Loading data…</div>
+
+<figure class="fig" id="figA" hidden>
+<div class="figtitle">Statewide</div>
+<div class="ctls">
+<label>View <select id="aView"><option value="year">One chart per year</option><option value="time">All years on one axis</option></select></label>
+<label>Grade <select id="aGrade"></select></label>
+<label>Students <select id="aG1"></select></label>
+<label>Compare with <select id="aG2"></select></label>
+<label>Show <select id="aMode"><option value="4">Four levels</option><option value="2">Met / not met</option></select></label>
+</div>
+<div id="aOut"></div>
+</figure>
+
+<figure class="fig" id="figB" hidden>
+<div class="figtitle" id="cTitle">High schools by share of students at a level</div>
+<div class="ctls">
+<label>Measure <select id="cMeas"><option value="met">% met (Level 3 or 4)</option><option value="1">% Level 1</option><option value="2">% Level 2</option><option value="3">% Level 3</option><option value="4">% Level 4</option></select></label>
+<label>Students <select id="cG"></select></label>
+<label>Year <select id="cYear"></select></label>
+<label>Compare with <select id="cCmp"></select></label>
+<label>Schools <select id="cSet"><option value="all">All with results</option><option value="same">Same schools both years</option></select></label>
+<label>Testers <select id="cMin"><option value="11">11 or more</option><option value="30">30 or more</option><option value="100">100 or more</option></select></label>
+<label>Count <select id="cUnit"><option value="n">Schools</option><option value="p">Percent of schools</option></select></label>
+</div>
+<div id="cOut"></div>
+<p class="fine" id="cNote"></p>
+</figure>
+
+<figure class="fig" id="figC" hidden>
+<div class="figtitle">High schools grouped by a school characteristic</div>
+<div class="ctls">
+<label>Group schools by <select id="dBy"></select></label>
+<label id="dSplitL">Split into <select id="dSplit"><option value="3">Thirds</option><option value="4">Quarters</option><option value="5">Fifths</option></select></label>
+<label id="dP1L"><select id="dP1"></select></label><label id="dP2L"><select id="dP2"></select></label><label id="dP3L"><select id="dP3"></select></label>
+<label>Charter schools <select id="dCh"><option value="all">Included</option><option value="no">Left out</option><option value="only">Only</option></select></label>
+<label>Students <select id="dG"></select></label>
+<label>Show <select id="dMode"><option value="4">Four levels</option><option value="2">Met / not met</option></select></label>
+</div>
+<div class="panels" id="dOut"></div>
+<p class="fine" id="dNote"></p>
+</figure>
+
+<figure class="fig" id="figD" hidden>
+<div class="figtitle" id="eTitle"></div>
+<div class="ctls">
+<label>School <input type="text" id="eSchool" list="eList" autocomplete="off" placeholder="Type a school name"></label><datalist id="eList"></datalist>
+<label>Students <select id="eG1"></select></label>
+<label>Compare with <select id="eG2"></select></label>
+<label>Show <select id="eMode"><option value="4">Four levels</option><option value="2">Met / not met</option></select></label>
+</div>
+<div class="panels two" id="eOut"></div>
+</figure>
+
+<details id="about">
+<summary>About the data</summary>
+<h3>Levels</h3>
+<p>The four achievement levels are fixed cut scores on the Smarter Balanced scale. For grade 11 math: Level 1 below 2543, Level 2 from 2543, Level 3 ("standard met") from 2628, Level 4 from 2718. "Met" means Level 3 or 4. Other grades have their own cut scores.</p>
+<p>In 2026 the state renamed the levels (Minimal, Developing, Proficient, Advanced) without changing the cut scores. 2026 results are due in October 2026 and can be added directly.</p>
+<h3>Missing and unusual years</h3>
+<p>No test was given in 2020. In 2021 fewer than half of 11th graders tested, and they scored higher than other years' students. 2021 is drawn hatched and should not be read as part of a trend.</p>
+<h3>School results</h3>
+<p>The state does not publish results for a group of fewer than 11 testers at a school. Pooled results (the grouped-school chart) therefore leave out students in small groups. For all students this is under 1% of testers after 2016 (3% in 2015). For smaller groups it is larger: in 2019 the school rows cover 82% of Black, 77% of Filipino, 73% of multiracial, and 89% of English-learner 11th graders statewide, against 99% of Hispanic and 96% of White 11th graders.</p>
+<p>When schools are pooled, each school counts in proportion to its number of tested students. The pooled all-student results match the statewide figures within 0.4 percentage points in every year.</p>
+<p>The number of schools with published results changes from year to year as schools open, close and cross the 11-tester line. The "same schools both years" option removes this turnover. Between 2019 and 2025 it matters: schools that dropped out after 2019 had a median of 4% met, while schools new by 2025 had a median of 21%.</p>
+<h3>School characteristics</h3>
+<p>Unduplicated pupil percentage (UPP): the share of a school's students who are low-income (eligible for free or reduced-price meals), English learners, or foster youth, each student counted once. It is the state's school-funding measure. Here it is the school's average for 2016–17 through 2019–20. It is not a poverty rate.</p>
+<p>Census-tract measures describe the neighborhood where the school is located, not its students: median household income, the share of residents below the federal poverty line, and the share of adults 25 and older with a bachelor's degree. American Community Survey 2015–2019 five-year estimates, in nominal dollars.</p>
+<p>A–G completion: the share of each four-year graduating cohort that finished the course sequence required for UC and CSU admission, pooled over the classes of 2017–2019. School-years with known reporting errors in the state file are left out.</p>
+<p>District groupings use the district recorded in the state's school directory, so they include charter schools the district authorized. With charter schools left out, the pooled results for San Diego Unified and Fresno Unified match the state's own district totals within 0.2 points; Los Angeles Unified's district totals also include its affiliated charters.</p>
+<p>Thirds, quarters and fifths are cut so each holds about the same number of tested students, not the same number of schools. Schools missing a characteristic are left out of that grouping.</p>
+<p>Regions: Bay Area (Alameda, Contra Costa, Marin, Napa, San Francisco, San Mateo, Santa Clara, Solano, Sonoma); Sacramento area (Sacramento, Placer, El Dorado, Yolo, Sutter, Yuba); Central Coast (Monterey, San Benito, San Luis Obispo, Santa Barbara, Santa Cruz, Ventura); San Joaquin Valley (San Joaquin, Stanislaus, Merced, Madera, Fresno, Kings, Tulare, Kern); Inland Empire (Riverside, San Bernardino); San Diego and Imperial; Los Angeles County; Orange County; North State (the 16 counties north of the Sacramento area); Sierra and Eastern (Alpine, Amador, Calaveras, Inyo, Mariposa, Mono, Tuolumne).</p>
+<h3>Student groups</h3>
+<p>Groups are as defined by the state. "Economically disadvantaged" means eligible for free or reduced-price meals or neither parent a high school graduate. The number of economically disadvantaged 11th graders rose from 244,000 in 2022 to 269,000 in 2023 while total testers barely changed, so that group's trend across 2022–2023 partly reflects a change in who is counted. From 2022, some students are reported as neither male nor female, so the two gender groups do not always add to the total.</p>
+<h3>Sources</h3>
+<p>California Department of Education: CAASPP Smarter Balanced research files 2015–2025 (statewide and school rows), public schools directory, LCFF unduplicated pupil counts, adjusted cohort graduation files (A–G). U.S. Census Bureau: American Community Survey. Built October 2026.</p>
+<h3>Data files</h3><p>Everything on this page comes from the CSV files in the data folder: <a href="data/statewide_levels.csv">statewide_levels.csv</a>, <a href="data/school_levels_grade11_math.csv">school_levels_grade11_math.csv</a>, <a href="data/schools.csv">schools.csv</a>, <a href="data/student_groups.csv">student_groups.csv</a> and <a href="data/cut_scores.csv">cut_scores.csv</a>. The README in the repository describes each column.</p>
+</details>
+</div>
+<div id="tip"></div>
+<script>
+const INLINE=/*INLINE*/null;
+window.addEventListener('DOMContentLoaded',()=>{});
+setTimeout(()=>{if(INLINE)start(INLINE);else fetch('data.json').then(r=>r.json()).then(start).catch(()=>{loading.textContent='The data file could not be loaded.'})},0);
+const NS="http://www.w3.org/2000/svg", tip=document.getElementById('tip');
+const COL=["var(--l1)","var(--l2)","var(--l3)","var(--l4)"], BIN=["var(--l1)","var(--l4)"];
+const LNAME=["Level 1 (standard not met)","Level 2 (nearly met)","Level 3 (met)","Level 4 (exceeded)"], BNAME=["Not met (Levels 1–2)","Met (Levels 3–4)"];
+const ALLY=[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+let D,YI;
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function txt(p,x,y,s,a){const t=el('text',Object.assign({x,y,'font-size':12},a||{}),p);t.textContent=s;return t}
+function hover(node,html){node.addEventListener('mousemove',e=>{tip.innerHTML=html;tip.style.display='block';const w=tip.offsetWidth;let x=e.clientX+14;if(x+w>innerWidth-8)x=e.clientX-w-14;tip.style.left=x+'px';tip.style.top=(e.clientY+14)+'px'});node.addEventListener('mouseleave',()=>tip.style.display='none')}
+const f1=v=>v.toFixed(1)+'%', fN=n=>Math.round(n).toLocaleString();
+function vals(r,mode){const L=r.slice(1,5).map(Number);return mode==='2'?[L[0]+L[1],L[2]+L[3]]:L}
+let hid=0;function hatch(svg){const id='h'+(++hid),d=el('defs',{},svg),p=el('pattern',{id,width:6,height:6,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},d);el('line',{x1:0,y1:0,x2:0,y2:6,stroke:'#fff','stroke-width':3},p);return `url(#${id})`}
+function axisY(svg,x,y0,y1,max,step,suf){el('line',{x1:x,y1:y0,x2:x,y2:y1,stroke:'#000','stroke-width':2.6},svg);for(let v=0;v<=max+1e-9;v+=step){const y=y0-(v/max)*(y0-y1);el('line',{x1:x,y1:y,x2:x-6,y2:y,stroke:'#000','stroke-width':2.2},svg);txt(svg,x-9,y+4,v+(suf||''),{'text-anchor':'end','font-size':11})}}
+function legendHTML(mode){const n=mode==='2'?BNAME:LNAME,c=mode==='2'?BIN:COL;return n.map((s,i)=>`<span><i style="background:${c[i]}"></i>${s}</span>`).join('')+`<span><i style="background:repeating-linear-gradient(45deg,#bbb 0 2px,#fff 2px 5px)"></i>2021 (partial testing)</span>`}
+const gname=g=>g==='1'?'All students':D.names[g];
+
+/* group menus */
+const MENU=[["","1"],["Gender","3 4"],["Race and ethnicity","76 74 77 78 80 144 75 79"],["Economic status","31 111"],["Race and ethnicity, economically disadvantaged","202 200 204 206"],["Race and ethnicity, not economically disadvantaged","222 220 224 226"],["English proficiency","180 8 160"],["Parent education","90 91 92 93 94"],["Disability","128 99"]];
+const SHORT={"31":"Economically disadvantaged","111":"Not economically disadvantaged","8":"Reclassified fluent English proficient","160":"English learners","180":"English only","90":"Parent: not a high school graduate","91":"Parent: high school graduate","92":"Parent: some college","93":"Parent: college graduate","94":"Parent: graduate school","128":"Students with disabilities","99":"Students without disabilities","74":"Black","78":"Hispanic or Latino","144":"Two or more races","202":"Asian, econ. disadvantaged","200":"Black, econ. disadvantaged","204":"Hispanic, econ. disadvantaged","206":"White, econ. disadvantaged","222":"Asian, not econ. disadvantaged","220":"Black, not econ. disadvantaged","224":"Hispanic, not econ. disadvantaged","226":"White, not econ. disadvantaged","75":"American Indian or Alaska Native","79":"Native Hawaiian or Pacific Islander"};
+const gn=g=>g==='1'?'All students':(SHORT[g]||D.names[g]);
+function fillGroups(sel,allowed,blank){sel.innerHTML=(blank?'<option value="">—</option>':'')+MENU.map(([lab,gs])=>{const o=gs.split(' ').filter(g=>allowed.has(g)).map(g=>`<option value="${g}">${gn(g)}</option>`).join('');return o?(lab?`<optgroup label="${lab}">${o}</optgroup>`:o):''}).join('')}
+
+/* stacked columns over time */
+function stacked(container,series,mode,opt){ // series: {year:[n,L1..L4]}
+  opt=opt||{};const W=opt.W||900,H=opt.H||320,L=46,R=8,T=12,B=H-28,svg=el('svg',{viewBox:`0 0 ${W} ${H}`},container),hp=hatch(svg);
+  axisY(svg,L,B,T,100,20,'%');el('line',{x1:L,y1:B,x2:W-R,y2:B,stroke:'#000','stroke-width':2.6},svg);
+  const slot=(W-R-L)/ALLY.length,bw=slot*0.7,cols=mode==='2'?BIN:COL,names=mode==='2'?BNAME:LNAME,lines=[];
+  ALLY.forEach((y,j)=>{const x=L+j*slot+(slot-bw)/2,cx=x+bw/2;
+    txt(svg,cx,B+18,opt.short?("'"+String(y).slice(2)):y,{'text-anchor':'middle','font-size':opt.short?11:12});
+    const r=series[y];if(!r){if(y===2020&&!opt.short)txt(svg,cx,B-8,'No test',{'text-anchor':'middle','font-size':11});return}
+    const v=vals(r,mode),tot=v.reduce((a,b)=>a+b,0)||100;let acc=0;
+    v.forEach((p,i)=>{const pn=p/tot*100,y0=B-acc/100*(B-T),h=pn/100*(B-T);acc+=pn;
+      const rc=el('rect',{x,y:y0-h,width:bw,height:h,fill:cols[i],stroke:'#000','stroke-width':1.5},svg);
+      if(y===2021)el('rect',{x,y:y0-h,width:bw,height:h,fill:hp,'pointer-events':'none'},svg);
+      if(!opt.short&&h>15)txt(svg,cx,y0-h/2+4,Math.round(p),{'text-anchor':'middle','font-size':11,style:'fill:'+((i===0||i===3||(mode==='2'&&i===1))?'#fff':'#000')});
+      hover(rc,`<b>${opt.label?opt.label+', ':''}${y}</b><br>${names[i]}: ${f1(p)}<br>${opt.count?opt.count(r):'Students: '+fN(r[0])}`)});
+    lines.push([x,x+bw,B-vals(r,'2')[0]/tot*(B-T)])});
+  lines.forEach(m=>el('line',{x1:m[0]-3,y1:m[2],x2:m[1]+3,y2:m[2],stroke:'#000','stroke-width':3.2,'pointer-events':'none'},svg));
+  if(!Object.keys(series).length)txt(svg,(L+W)/2,(T+B)/2,'No published results',{'text-anchor':'middle','font-size':13});
+  return svg}
+function panel(parent,title){const div=document.createElement('div');div.innerHTML=`<div class="pt">${title}</div>`;parent.appendChild(div);return div}
+
+/* ---------- Figure 1: statewide ---------- */
+function drawA(){const g=aGrade.value,mode=aMode.value,g1=aG1.value,g2=aG2.value,S=D.state[g],out=aOut;out.innerHTML='';out.className='';
+  const s1=S[g1]||{},s2=g2?(S[g2]||{}):null;
+  if(aView.value==='time'){
+    if(!s2){stacked(out,s1,mode,{label:gn(g1)});return}
+    out.className='panels two';stacked(panel(out,gn(g1)),s1,mode,{W:460,H:330,short:true,label:gn(g1)});stacked(panel(out,gn(g2)),s2,mode,{W:460,H:330,short:true,label:gn(g2)});return}
+  out.className='multiples';const k=mode==='2'?2:4;
+  let max=0;[s1,s2||{}].forEach(s=>Object.values(s).forEach(r=>vals(r,mode).forEach(v=>max=Math.max(max,v))));max=Math.max(20,Math.ceil(max/20)*20);
+  const W=190,H=150,L=34,B=128,T=8;
+  ALLY.forEach(y=>{const div=panel(out,y+(y===2021?' <small>(partial)</small>':''));
+    const svg=el('svg',{viewBox:`0 0 ${W} ${H}`},div),hp=hatch(svg);
+    axisY(svg,L,B,T,max,max>60?40:20,'');el('line',{x1:L,y1:B,x2:W-4,y2:B,stroke:'#000','stroke-width':2.6},svg);
+    const r=s1[y],r2=s2?s2[y]:null;if(!r&&!r2){txt(svg,(L+W)/2,(B+T)/2,y===2020?'No test':'No data',{'text-anchor':'middle','font-size':13});return}
+    const slot=(W-4-L-6)/k;
+    for(let i=0;i<k;i++){const x0=L+5+i*slot,lab=mode==='2'?(i?'Met':'Not'):'L'+(i+1);txt(svg,x0+(slot-5)/2,B+15,lab,{'text-anchor':'middle','font-size':11});
+      const bars=s2?[[r,0,(slot-5)/2],[r2,1,(slot-5)/2]]:[[r,0,slot-5]];
+      bars.forEach(([rr,b,w],bi)=>{if(!rr)return;const p=vals(rr,mode)[i],h=Math.min(p,max)/max*(B-T),x=x0+bi*w,c=(mode==='2'?BIN:COL)[i];
+        const rc=b?el('rect',{x:x+1.5,y:B-h+1.5,width:w-3,height:Math.max(0,h-1.5),fill:'#fff',stroke:c,'stroke-width':3},svg):el('rect',{x,y:B-h,width:w,height:h,fill:c,stroke:'#000','stroke-width':1.6},svg);
+        if(y===2021&&!b)el('rect',{x,y:B-h,width:w,height:h,fill:hp,'pointer-events':'none'},svg);
+        if(!s2)txt(svg,x+w/2,B-h-4,Math.round(p),{'text-anchor':'middle','font-size':11});
+        hover(rc,`<b>${y}, grade ${g}: ${gn(b?g2:g1)}</b><br>${(mode==='2'?BNAME:LNAME)[i]}: ${f1(p)}<br>Students tested: ${fN(rr[0])}`)})}});
+  if(s2){const n=document.createElement('p');n.className='fine';n.style.gridColumn='1/-1';n.innerHTML=`Filled bars: ${gn(g1)}. Outlined bars: ${gn(g2)}.`;out.appendChild(n)}}
+
+/* ---------- school helpers ---------- */
+// school row: [name,district,county,region,type,charter,upp,ag,inc,pov,ba,wsmed,{g:[[yi,ws,L1,L2,L3,L4],...]}]
+function rowsFor(s,g){const r={};(s[12][g]||[]).forEach(a=>r[D.years[a[0]]]=[a[1],a[2],a[3],a[4],a[5]]);return r}
+function pool(list,g){const o={};list.forEach(s=>(s[12][g]||[]).forEach(a=>{const y=D.years[a[0]];const t=o[y]||(o[y]=[0,0,0,0,0,0]);t[0]+=a[1];for(let i=0;i<4;i++)t[i+1]+=a[1]*a[i+2];t[5]++}));
+  for(const y in o){const t=o[y];o[y]=[t[0],t[1]/t[0],t[2]/t[0],t[3]/t[0],t[4]/t[0],t[5]]}return o}
+
+/* ---------- Figure 2: schools counted ---------- */
+function measure(r,m){return m==='met'?r[3]+r[4]:r[+m]}
+function drawC(){const m=cMeas.value,g=cG.value,y=+cYear.value,cy=cCmp.value?+cCmp.value:null,min=+cMin.value,pct=cUnit.value==='p',same=cSet.value==='same'&&cy;
+  cSet.disabled=!cy;
+  const pick=(yr)=>{const v=[];D.schools.forEach(s=>{const r=rowsFor(s,g);const a=r[yr];if(!a||a[0]<min)return;if(same){const b=r[yr===y?cy:y];if(!b||b[0]<min)return}v.push(measure(a,m))});return v};
+  const hist=v=>{const c=new Array(10).fill(0);v.forEach(x=>c[Math.min(9,Math.floor(x/10))]++);return c};
+  const A=pick(y),C=cy?pick(cy):null,hA=hist(A),hC=C?hist(C):null;
+  const mn=cMeas.options[cMeas.selectedIndex].text;
+  cTitle.textContent='High schools by share of students at a level';
+  const f=(h,n,i)=>pct?h[i]/n*100:h[i];let mx=Math.max(...hA.map((_,i)=>f(hA,A.length,i)),...(hC?hC.map((_,i)=>f(hC,C.length,i)):[0]),1);
+  const step=pct?(mx>40?20:10):(mx>600?200:mx>300?100:mx>100?50:mx>40?20:10);mx=Math.ceil(mx/step)*step;
+  const W=900,H=330,L=52,R=10,T=12,B=H-44;cOut.innerHTML='';const svg=el('svg',{viewBox:`0 0 ${W} ${H}`},cOut);
+  axisY(svg,L,B,T,mx,step,pct?'%':'');el('line',{x1:L,y1:B,x2:W-R,y2:B,stroke:'#000','stroke-width':2.6},svg);
+  const bw=(W-R-L-10)/10,fill=m==='met'?'var(--l4)':COL[+m-1],hp=hatch(svg);
+  for(let i=0;i<10;i++){const x=L+8+i*bw,h=f(hA,A.length,i)/mx*(B-T);
+    const rc=el('rect',{x,y:B-h,width:bw-4,height:h,fill,stroke:'#000','stroke-width':1.6},svg);
+    if(y===2021)el('rect',{x,y:B-h,width:bw-4,height:h,fill:hp,'pointer-events':'none'},svg);
+    hover(rc,`<b>${i*10}–${i*10+10}%</b><br>${y}: ${hA[i]} schools (${A.length?(hA[i]/A.length*100).toFixed(1):0}%)`+(C?`<br>${cy}: ${hC[i]} schools (${C.length?(hC[i]/C.length*100).toFixed(1):0}%)`:''));
+    txt(svg,x+(bw-4)/2,B+17,`${i*10}–${i*10+10}`,{'text-anchor':'middle','font-size':11})}
+  txt(svg,L+8,B+37,`${mn}, ${gn(g).toLowerCase()==='all students'?'all students':gn(g)}`,{'font-size':12});
+  if(C){let d='';for(let i=0;i<10;i++){const x=L+8+i*bw,yv=B-f(hC,C.length,i)/mx*(B-T);d+=(i?'L':'M')+x+','+yv+'L'+(x+bw-4)+','+yv}el('path',{d,fill:'none',stroke:'#000','stroke-width':3.2,'stroke-dasharray':'7 4','pointer-events':'none'},svg)}
+  const med=v=>{if(!v.length)return '–';const s=[...v].sort((a,b)=>a-b),n=s.length;return (n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2).toFixed(1)+'%'};
+  cNote.textContent=`${y}: ${A.length.toLocaleString()} schools, median ${med(A)}.`+(C?` ${cy} (dashed outline): ${C.length.toLocaleString()} schools, median ${med(C)}.`:'')}
+
+/* ---------- Figure 3: grouped schools ---------- */
+const BY=[["upp","Unduplicated pupil percentage (UPP)",6,"pct"],["inc","Census tract median household income",8,"usd"],["pov","Census tract poverty rate",9,"pct"],["ba","Census tract adults with a bachelor's degree",10,"pct"],["ag","A–G completion rate",7,"pct"],["region","Region",3,"cat"],["county","County",2,"pick"],["district","District",1,"pick"],["type","School type",4,"cat"],["charter","Charter or not",5,"cat"]];
+const PICKDEF={county:["Los Angeles","Orange","San Diego"],district:["Los Angeles Unified","San Diego Unified","Fresno Unified"]};
+const fmtv=(v,k)=>k==='usd'?'$'+Math.round(v/1000)+'k':Math.round(v)+'%';
+function cuts(idx,q){const v=D.schools.filter(s=>s[idx]!=null&&s[12]['1']).map(s=>[s[idx],s[11]]).sort((a,b)=>a[0]-b[0]);const T=v.reduce((a,b)=>a+b[1],0);const c=[];let acc=0,k=1;v.forEach(([x,w])=>{acc+=w;while(k<q&&acc>=T*k/q){c.push(x);k++}});return c}
+function setupPick(){const b=BY.find(b=>b[0]===dBy.value),isPick=b[3]==='pick',num=b[3]==='pct'||b[3]==='usd';dSplitL.hidden=!num;[dP1L,dP2L,dP3L].forEach(l=>l.hidden=!isPick);
+  if(isPick){const counts={};D.schools.forEach(s=>{if(s[12]['1']){const k=s[b[2]];counts[k]=(counts[k]||0)+s[11]}});const keys=Object.keys(counts).filter(k=>k&&k!=='null').sort();
+    [dP1,dP2,dP3].forEach((sel,i)=>{sel.innerHTML=(i?'<option value="">—</option>':'')+keys.map(k=>`<option>${k}</option>`).join('');sel.value=PICKDEF[b[0]][i]||''})}}
+function drawD(){const b=BY.find(b=>b[0]===dBy.value),idx=b[2],kind=b[3],g=dG.value,mode=dMode.value;dOut.innerHTML='';const groups=[];
+  if(kind==='pct'||kind==='usd'){const q=+dSplit.value,c=cuts(idx,q),lo=[-Infinity,...c],hi=[...c,Infinity];
+    const nm=q===3?['Lowest third','Middle third','Highest third']:q===4?['Lowest quarter','Second quarter','Third quarter','Highest quarter']:['Lowest fifth','Second fifth','Middle fifth','Fourth fifth','Highest fifth'];
+    for(let i=0;i<q;i++)groups.push([nm[i],i===0?`under ${fmtv(hi[i],kind)}`:i===q-1?`${fmtv(lo[i],kind)} and over`:`${fmtv(lo[i],kind)} to ${fmtv(hi[i],kind)}`,s=>s[idx]!=null&&s[idx]>=lo[i]&&s[idx]<hi[i]])}
+  else if(kind==='cat'){const vals=[...new Set(D.schools.map(s=>s[idx]).filter(v=>v))];const order={type:["Regular high school","Continuation high school","Alternative school of choice","K-12 school","Other (community day, court, special ed., etc.)"],charter:["Not charter","Charter"]}[b[0]]||vals.sort();order.filter(v=>vals.includes(v)).forEach(v=>groups.push([v,'',s=>s[idx]===v]))}
+  else [dP1,dP2,dP3].map(s=>s.value).filter(v=>v).forEach(v=>groups.push([v,'',s=>s[idx]===v]));
+  dOut.className='panels';
+  let miss=0;D.schools.forEach(s=>{if(s[12]['1']&&(s[idx]==null||s[idx]===''))miss++});
+  groups.forEach(([t,sub,fn])=>{const ch=dCh.value,list=D.schools.filter(s=>fn(s)&&(ch==='all'||(ch==='no'?s[5]!=='Charter':s[5]==='Charter'))),P=pool(list,g),ns=list.filter(s=>s[12][g]).length;
+    const div=panel(dOut,`${t}${sub?' <small>('+sub+')</small>':''}<br><small>${ns.toLocaleString()} schools</small>`);
+    stacked(div,P,mode,{W:380,H:270,short:true,label:t,count:r=>`Students: ${fN(r[0])}<br>Schools: ${r[5]}`})});
+  dNote.textContent=(miss&&kind!=='pick'?`${miss} schools without this characteristic are left out. `:'')+(g!=='1'?`Only schools that report at least 11 ${gn(g).toLowerCase()} testers are counted.`:'')}
+
+/* ---------- Figure 4: one school ---------- */
+const keyOf=s=>s[0]+' — '+s[1];let BYK={};
+function schoolGroups(s){return new Set(Object.keys(s[12]))}
+function drawE(){const s=BYK[eSchool.value];if(!s)return;const has=schoolGroups(s);
+  const k1=eG1.value,k2=eG2.value;fillGroups(eG1,has,false);fillGroups(eG2,has,true);eG1.value=has.has(k1)?k1:'1';eG2.value=has.has(k2)?k2:'';
+  eTitle.textContent=`${s[0]}, ${s[1]}`;eOut.innerHTML='';const g1=eG1.value,g2=eG2.value,mode=eMode.value;
+  if(!g2){eOut.className='';stacked(eOut,rowsFor(s,g1),mode,{label:gn(g1)})}
+  else{eOut.className='panels two';stacked(panel(eOut,gn(g1)),rowsFor(s,g1),mode,{W:460,H:330,short:true,label:gn(g1)});stacked(panel(eOut,gn(g2)),rowsFor(s,g2),mode,{W:460,H:330,short:true,label:gn(g2)})}}
+
+/* ---------- start ---------- */
+function start(data){D=data;loading.hidden=true;['figA','figB','figC','figD'].forEach(i=>document.getElementById(i).hidden=false);
+  legendTop.innerHTML=legendHTML('4')+'<span>In the met / not met view, Levels 1–2 are red and Levels 3–4 blue.</span>';
+  aGrade.innerHTML=Object.keys(D.state).map(g=>`<option value="${g}"${g==='11'?' selected':''}>${g}</option>`).join('');
+  const stG=()=>new Set(Object.keys(D.state[aGrade.value]));fillGroups(aG1,stG(),false);fillGroups(aG2,stG(),true);
+  const schG=new Set(Object.keys(D.schools.reduce((a,s)=>Object.assign(a,s[12]),{})));fillGroups(cG,schG,false);fillGroups(dG,schG,false);
+  const yo=D.years.map(y=>`<option>${y}</option>`).join('');cYear.innerHTML=yo;cYear.value='2025';cCmp.innerHTML='<option value="">—</option>'+yo;cCmp.value='2019';
+  dBy.innerHTML=BY.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');
+  BYK={};D.schools.forEach(s=>BYK[keyOf(s)]=s);eList.innerHTML=D.schools.filter(s=>s[12]['1']&&s[12]['1'].length>=5).map(s=>`<option value="${keyOf(s).replace(/"/g,'&quot;')}">`).join('');
+  eSchool.value=Object.keys(BYK).find(k=>k.startsWith('Berkeley High — Berkeley'))||Object.keys(BYK)[0];
+  aGrade.onchange=()=>{const a=aG1.value,b=aG2.value;fillGroups(aG1,stG(),false);fillGroups(aG2,stG(),true);aG1.value=stG().has(a)?a:'1';aG2.value=stG().has(b)?b:'';drawA()};
+  [aView,aG1,aG2,aMode].forEach(e=>e.onchange=drawA);[cMeas,cG,cYear,cCmp,cSet,cMin,cUnit].forEach(e=>e.onchange=drawC);
+  dBy.onchange=()=>{setupPick();drawD()};[dSplit,dP1,dP2,dP3,dCh,dG,dMode].forEach(e=>e.onchange=drawD);
+  [eG1,eG2,eMode].forEach(e=>e.onchange=drawE);eSchool.addEventListener('change',drawE);eSchool.addEventListener('input',()=>{if(BYK[eSchool.value])drawE()});
+  setupPick();drawA();drawC();drawD();drawE()}
+</script>
+
+</body></html>

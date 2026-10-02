@@ -1,0 +1,59 @@
+group_code,group_name,group_category,in_school_file
+1,All Students,All Students,yes
+3,Male,Gender,yes
+4,Female,Gender,yes
+6,"IFEP, RFEP, and EO (Fluent English proficient and English only)",English-Language Fluency,no
+7,IFEP (Initial fluent English proficient),English-Language Fluency,yes
+8,RFEP (Reclassified fluent English proficient),English-Language Fluency,yes
+28,Migrant education,Migrant,no
+29,Not migrant education,Migrant,no
+31,Socioeconomically disadvantaged,Economic Status,yes
+50,Armed forces family member,Military Status,no
+51,Not armed forces family member,Military Status,no
+52,Homeless,Homeless Status,no
+53,Not homeless,Homeless Status,no
+74,Black or African American,Race and Ethnicity,yes
+75,American Indian or Alaska Native,Race and Ethnicity,yes
+76,Asian,Race and Ethnicity,yes
+77,Filipino,Race and Ethnicity,yes
+78,Hispanic or Latino,Race and Ethnicity,yes
+79,Native Hawaiian or Pacific Islander,Race and Ethnicity,yes
+80,White,Race and Ethnicity,yes
+90,Not a high school graduate,Parent Education,yes
+91,High school graduate,Parent Education,yes
+92,Some college (includes AA degree),Parent Education,yes
+93,College graduate,Parent Education,yes
+94,Graduate school/Post graduate,Parent Education,yes
+99,No reported disabilities,Disability Status,yes
+111,Not socioeconomically disadvantaged,Economic Status,yes
+120,ELs enrolled less than 12 months,English-Language Fluency,yes
+121,Declined to state,Parent Education,yes
+128,Reported disabilities,Disability Status,yes
+142,ELs enrolled 12 months or more,English-Language Fluency,yes
+144,Two or more races,Race and Ethnicity,yes
+160,"EL (English learner, excluding RFEP)",English-Language Fluency,yes
+170,EverEL,English-Language Fluency,yes
+180,EO (English only),English-Language Fluency,yes
+190,TBD (To be determined),English-Language Fluency,no
+200,Black or African American,Ethnicity for Socioeconomically Disadvantaged,no
+201,American Indian or Alaska Native,Ethnicity for Socioeconomically Disadvantaged,no
+202,Asian,Ethnicity for Socioeconomically Disadvantaged,no
+203,Filipino,Ethnicity for Socioeconomically Disadvantaged,no
+204,Hispanic or Latino,Ethnicity for Socioeconomically Disadvantaged,no
+205,Native Hawaiian or Pacific Islander,Ethnicity for Socioeconomically Disadvantaged,no
+206,White,Ethnicity for Socioeconomically Disadvantaged,no
+207,Two or more races,Ethnicity for Socioeconomically Disadvantaged,no
+220,Black or African American,Ethnicity for Not Socioeconomically Disadvantaged,no
+221,American Indian or Alaska Native,Ethnicity for Not Socioeconomically Disadvantaged,no
+222,Asian,Ethnicity for Not Socioeconomically Disadvantaged,no
+223,Filipino,Ethnicity for Not Socioeconomically Disadvantaged,no
+224,Hispanic or Latino,Ethnicity for Not Socioeconomically Disadvantaged,no
+225,Native Hawaiian or Pacific Islander,Ethnicity for Not Socioeconomically Disadvantaged,no
+226,White,Ethnicity for Not Socioeconomically Disadvantaged,no
+227,Two or more races,Ethnicity for Not Socioeconomically Disadvantaged,no
+240,Foster youth,Foster Status,no
+241,Not foster youth,Foster Status,no
+243,ADEL (Adult English learner),English-Language Fluency,no
+250,LTEL (Long-Term English learner),English-Language Fluency,no
+251,ARLTEL (At-Risk of becoming LTEL),English-Language Fluency,no
+252,NeverEL,English-Language Fluency,no
