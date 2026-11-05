@@ -41,20 +41,23 @@ details p{margin:0 0 8px}
 </style>
 <div class="page">
 <h1>SBAC math achievement levels, California, 2015–2025</h1>
-<p class="sub">Share of tested students at each of the four levels. Grade 11 unless noted.</p>
+<p class="sub">Share of tested students at each of the four levels. Grade 11 math unless noted.</p>
 <div class="legend" id="legendTop"></div>
 <div id="loading">Loading data…</div>
 
 <figure class="fig" id="figA" hidden>
 <div class="figtitle">Statewide</div>
 <div class="ctls">
-<label>View <select id="aView"><option value="year">One chart per year</option><option value="time">All years on one axis</option></select></label>
-<label>Grade <select id="aGrade"></select></label>
+<label>View <select id="aView"><option value="year">One chart per year</option><option value="time">All years on one axis</option><option value="cohort">Follow a cohort</option></select></label>
+<label>Subject <select id="aSubj"><option value="math">Mathematics</option><option value="ela">English language arts</option></select></label>
+<label id="aGradeL">Grade <select id="aGrade"></select></label>
+<label id="aCohortL" hidden>Cohort <select id="aCohort"></select></label>
 <label>Students <select id="aG1"></select></label>
 <label>Compare with <select id="aG2"></select></label>
 <label>Show <select id="aMode"><option value="4">Four levels</option><option value="2">Met / not met</option></select></label>
 </div>
 <div id="aOut"></div>
+<p class="fine" id="aNote"></p>
 </figure>
 
 <figure class="fig" id="figB" hidden>
@@ -70,6 +73,7 @@ details p{margin:0 0 8px}
 </div>
 <div id="cOut"></div>
 <p class="fine" id="cNote"></p>
+<p class="fine">This figure and the two school figures below show grade 11 math only: the school file holds no other grade or subject.</p>
 </figure>
 
 <figure class="fig" id="figC" hidden>
@@ -100,13 +104,15 @@ details p{margin:0 0 8px}
 <details id="about">
 <summary>About the data</summary>
 <h3>Levels</h3>
-<p>The four achievement levels are fixed cut scores on the Smarter Balanced scale. For grade 11 math: Level 1 below 2543, Level 2 from 2543, Level 3 ("standard met") from 2628, Level 4 from 2718. "Met" means Level 3 or 4. Other grades have their own cut scores.</p>
+<p>The four achievement levels are fixed cut scores on the Smarter Balanced scale. For grade 11 math: Level 1 below 2543, Level 2 from 2543, Level 3 ("standard met") from 2628, Level 4 from 2718. "Met" means Level 3 or 4. Each grade and subject has its own cut scores. First score of Levels 2, 3 and 4, math: grade 3: 2381, 2436, 2501; grade 4: 2411, 2485, 2549; grade 5: 2455, 2528, 2579; grade 6: 2473, 2552, 2610; grade 7: 2484, 2567, 2635; grade 8: 2504, 2586, 2653; grade 11: 2543, 2628, 2718. English language arts: grade 3: 2367, 2432, 2490; grade 4: 2416, 2473, 2533; grade 5: 2442, 2502, 2582; grade 6: 2457, 2531, 2618; grade 7: 2479, 2552, 2649; grade 8: 2487, 2567, 2668; grade 11: 2493, 2583, 2682.</p>
 <p>In 2026 the state renamed the levels (Minimal, Developing, Proficient, Advanced) without changing the cut scores. 2026 results are due in October 2026 and can be added directly.</p>
 <h3>Missing and unusual years</h3>
-<p>No test was given in 2020. In 2021 fewer than half of 11th graders tested, and they scored higher than other years' students. 2021 is drawn hatched and should not be read as part of a trend.</p>
+<p>No test was given in 2020. In 2021 fewer than half of 11th graders tested, and about a fifth of students in grades 3 to 8; those who tested scored higher than other years' students. 2021 is drawn hatched and should not be read as part of a trend.</p>
+<h3>Statewide figure</h3>
+<p>The statewide figure can show either subject (math or English language arts) and any tested grade (3 to 8 and 11). The default is grade 11 math. The "follow a cohort" view strings together the statewide result for grade 3 in one year, grade 4 the next year, and so on through grade 8, then grade 11 three years later (grades 9 and 10 are not tested). Cohorts are listed when at least two of their grades were tested. This is a synthetic cohort: each bar is everyone tested in that grade and year, not the same students followed over time. Students move into and out of California, repeat or skip a grade, and are absent or exempted at different rates, and the grade 11 cohorts of 2022 and 2023 were counted as economically disadvantaged on a changed basis (see "Student groups"). Each grade has its own cut scores, so the levels say whether students met the standard for that grade, not where they sit on one scale. Every cohort that was in a tested grade in 2020 has a gap there, and a cohort tested in 2021 has a hatched bar; the note under the chart gives the share of enrolled students who tested that year.</p>
 <h3>School results</h3>
 <p>The state does not publish results for a group of fewer than 11 testers at a school. Pooled results (the grouped-school chart) therefore leave out students in small groups. For all students this is under 1% of testers after 2016 (3% in 2015). For smaller groups it is larger: in 2019 the school rows cover 82% of Black, 77% of Filipino, 73% of multiracial, and 89% of English-learner 11th graders statewide, against 99% of Hispanic and 96% of White 11th graders.</p>
-<p>When schools are pooled, each school counts in proportion to its number of tested students. The pooled all-student results match the statewide figures within 0.4 percentage points in every year.</p>
+<p>The three school figures show grade 11 math only; the school file holds no other grade or subject. When schools are pooled, each school counts in proportion to its number of tested students. The pooled all-student results match the statewide figures within 0.4 percentage points in every year.</p>
 <p>The number of schools with published results changes from year to year as schools open, close and cross the 11-tester line. The "same schools both years" option removes this turnover. Between 2019 and 2025 it matters: schools that dropped out after 2019 had a median of 4% met, while schools new by 2025 had a median of 21%.</p>
 <h3>School characteristics</h3>
 <p>Unduplicated pupil percentage (UPP): the share of a school's students who are low-income (eligible for free or reduced-price meals), English learners, or foster youth, each student counted once. It is the state's school-funding measure. Here it is the school's average for 2016–17 through 2019–20. It is not a poverty rate.</p>
@@ -119,7 +125,7 @@ details p{margin:0 0 8px}
 <p>Groups are as defined by the state. "Economically disadvantaged" means eligible for free or reduced-price meals or neither parent a high school graduate. The number of economically disadvantaged 11th graders rose from 244,000 in 2022 to 269,000 in 2023 while total testers barely changed, so that group's trend across 2022–2023 partly reflects a change in who is counted. From 2022, some students are reported as neither male nor female, so the two gender groups do not always add to the total.</p>
 <h3>Sources</h3>
 <p>California Department of Education: CAASPP Smarter Balanced research files 2015–2025 (statewide and school rows), public schools directory, LCFF unduplicated pupil counts, adjusted cohort graduation files (A–G). U.S. Census Bureau: American Community Survey. Built October 2026.</p>
-<h3>Data files</h3><p>Everything on this page comes from the CSV files in the data folder: <a href="data/statewide_levels.csv">statewide_levels.csv</a>, <a href="data/school_levels_grade11_math.csv">school_levels_grade11_math.csv</a>, <a href="data/schools.csv">schools.csv</a>, <a href="data/student_groups.csv">student_groups.csv</a> and <a href="data/cut_scores.csv">cut_scores.csv</a>. The README in the repository describes each column.</p>
+<h3>Data files</h3><p>Everything on this page comes from the CSV files in the data folder: <a href="data/statewide_levels.csv">statewide_levels.csv</a>, <a href="data/school_levels_grade11_math.csv">school_levels_grade11_math.csv</a>, <a href="data/schools.csv">schools.csv</a>, <a href="data/student_groups.csv">student_groups.csv</a> and <a href="data/cut_scores.csv">cut_scores.csv</a>. The README in the repository describes each column and the layout of data.json, the file the page itself reads.</p>
 </details>
 </div>
 <div id="tip"></div>
@@ -149,19 +155,21 @@ const gn=g=>g==='1'?'All students':(SHORT[g]||D.names[g]);
 function fillGroups(sel,allowed,blank){sel.innerHTML=(blank?'<option value="">—</option>':'')+MENU.map(([lab,gs])=>{const o=gs.split(' ').filter(g=>allowed.has(g)).map(g=>`<option value="${g}">${gn(g)}</option>`).join('');return o?(lab?`<optgroup label="${lab}">${o}</optgroup>`:o):''}).join('')}
 
 /* stacked columns over time */
-function stacked(container,series,mode,opt){ // series: {year:[n,L1..L4]}
-  opt=opt||{};const W=opt.W||900,H=opt.H||320,L=46,R=8,T=12,B=H-28,svg=el('svg',{viewBox:`0 0 ${W} ${H}`},container),hp=hatch(svg);
+function stacked(container,series,mode,opt){ // series: {year:[n,L1..L4]}, or keyed by opt.cats[].k when categories are not years
+  opt=opt||{};const cats=opt.cats||ALLY.map(y=>({k:y,lab:opt.short?("'"+String(y).slice(2)):y,hatch:y===2021,gap:(y===2020&&!opt.short)?'No test':''}));
+  const two=cats.some(c=>c.sub),W=opt.W||900,H0=opt.H||320,H=H0+(two?14:0),L=46,R=8,T=12,B=H0-28,svg=el('svg',{viewBox:`0 0 ${W} ${H}`},container),hp=hatch(svg);
   axisY(svg,L,B,T,100,20,'%');el('line',{x1:L,y1:B,x2:W-R,y2:B,stroke:'#000','stroke-width':2.6},svg);
-  const slot=(W-R-L)/ALLY.length,bw=slot*0.7,cols=mode==='2'?BIN:COL,names=mode==='2'?BNAME:LNAME,lines=[];
-  ALLY.forEach((y,j)=>{const x=L+j*slot+(slot-bw)/2,cx=x+bw/2;
-    txt(svg,cx,B+18,opt.short?("'"+String(y).slice(2)):y,{'text-anchor':'middle','font-size':opt.short?11:12});
-    const r=series[y];if(!r){if(y===2020&&!opt.short)txt(svg,cx,B-8,'No test',{'text-anchor':'middle','font-size':11});return}
+  const slot=(W-R-L)/cats.length,bw=slot*0.7,cols=mode==='2'?BIN:COL,names=mode==='2'?BNAME:LNAME,lines=[];
+  cats.forEach((c,j)=>{const x=L+j*slot+(slot-bw)/2,cx=x+bw/2;
+    txt(svg,cx,B+18,c.lab,{'text-anchor':'middle','font-size':opt.short?11:12});
+    if(c.sub)txt(svg,cx,B+32,c.sub,{'text-anchor':'middle','font-size':11});
+    const r=series[c.k];if(!r){if(c.gap)txt(svg,cx,B-8,c.gap,{'text-anchor':'middle','font-size':opt.short?10:11});return}
     const v=vals(r,mode),tot=v.reduce((a,b)=>a+b,0)||100;let acc=0;
     v.forEach((p,i)=>{const pn=p/tot*100,y0=B-acc/100*(B-T),h=pn/100*(B-T);acc+=pn;
       const rc=el('rect',{x,y:y0-h,width:bw,height:h,fill:cols[i],stroke:'#000','stroke-width':1.5},svg);
-      if(y===2021)el('rect',{x,y:y0-h,width:bw,height:h,fill:hp,'pointer-events':'none'},svg);
+      if(c.hatch)el('rect',{x,y:y0-h,width:bw,height:h,fill:hp,'pointer-events':'none'},svg);
       if(!opt.short&&h>15)txt(svg,cx,y0-h/2+4,Math.round(p),{'text-anchor':'middle','font-size':11,style:'fill:'+((i===0||i===3||(mode==='2'&&i===1))?'#fff':'#000')});
-      hover(rc,`<b>${opt.label?opt.label+', ':''}${y}</b><br>${names[i]}: ${f1(p)}<br>${opt.count?opt.count(r):'Students: '+fN(r[0])}`)});
+      hover(rc,`<b>${opt.label?opt.label+', ':''}${c.tip||c.k}</b><br>${names[i]}: ${f1(p)}<br>${opt.count?opt.count(r):'Students: '+fN(r[0])}`)});
     lines.push([x,x+bw,B-vals(r,'2')[0]/tot*(B-T)])});
   lines.forEach(m=>el('line',{x1:m[0]-3,y1:m[2],x2:m[1]+3,y2:m[2],stroke:'#000','stroke-width':3.2,'pointer-events':'none'},svg));
   if(!Object.keys(series).length)txt(svg,(L+W)/2,(T+B)/2,'No published results',{'text-anchor':'middle','font-size':13});
@@ -169,7 +177,23 @@ function stacked(container,series,mode,opt){ // series: {year:[n,L1..L4]}
 function panel(parent,title){const div=document.createElement('div');div.innerHTML=`<div class="pt">${title}</div>`;parent.appendChild(div);return div}
 
 /* ---------- Figure 1: statewide ---------- */
-function drawA(){const g=aGrade.value,mode=aMode.value,g1=aG1.value,g2=aG2.value,S=D.state[g],out=aOut;out.innerHTML='';out.className='';
+const GRADES=[3,4,5,6,7,8,11],SUBJ=()=>aSubj.value==='ela'?D.state_ela:D.state;
+// A cohort is named by the year it was in grade 3; grade g is tested in year y3+g-3. Listed when at least two grades were tested.
+function cohortList(){const L=[];for(let y3=2000;y3<=2030;y3++){const pts=GRADES.filter(g=>D.years.includes(y3+g-3));if(pts.length>=2)L.push([y3,`Grade ${pts[0]} in ${y3+pts[0]-3} to grade ${pts[pts.length-1]} in ${y3+pts[pts.length-1]-3}`])}return L}
+function drawCohort(){const S=SUBJ(),mode=aMode.value,g1=aG1.value,g2=aG2.value,y3=+aCohort.value,out=aOut,E=D.enrolled[aSubj.value],yrs=GRADES.map(g=>y3+g-3);
+  const cats=GRADES.map((g,i)=>{const y=yrs[i];return {k:g,lab:'Grade '+g,sub:String(y),hatch:y===2021,gap:y===2020?'No test':y<ALLY[0]?'Before '+ALLY[0]:y>ALLY[ALLY.length-1]?'Not yet':'',tip:`grade ${g}, ${y}`}});
+  const ser=g=>{const o={};GRADES.forEach((gr,i)=>{const r=((S[gr]||{})[g]||{})[yrs[i]];if(r)o[gr]=r});return o};
+  const s1=ser(g1),s2=g2?ser(g2):null;
+  if(!s2)stacked(out,s1,mode,{label:gn(g1),cats});
+  else{out.className='panels two';stacked(panel(out,gn(g1)),s1,mode,{W:460,H:330,short:true,label:gn(g1),cats});stacked(panel(out,gn(g2)),s2,mode,{W:460,H:330,short:true,label:gn(g2),cats})}
+  const parts=[cohortList().find(c=>c[0]===y3)[1]+(aSubj.value==='ela'?', English language arts.':', math.')];
+  if(yrs.includes(2020))parts.push(`No test was given in 2020 (grade ${GRADES[yrs.indexOf(2020)]}).`);
+  if(yrs.includes(2021)){const g=GRADES[yrs.indexOf(2021)],t=[g1,g2].filter(x=>x).map(x=>{const r=((S[g]||{})[x]||{})['2021'],e=((E[g]||{})[x]||{})['2021'];return r&&e?`${gn(x)}: ${fN(r[0])} of ${fN(e)} enrolled tested (${Math.round(r[0]/e*100)}%)`:''}).filter(x=>x);if(t.length)parts.push(`In 2021 (grade ${g}), ${t.join('; ')}.`)}
+  parts.push('Each bar is everyone tested in that grade and year, not the same students followed (see "About the data").');
+  aNote.textContent=parts.join(' ')}
+function drawA(){const g=aGrade.value,mode=aMode.value,g1=aG1.value,g2=aG2.value,S=SUBJ()[g],out=aOut,st=aSubj.value==='ela'?'ELA ':'';out.innerHTML='';out.className='';aNote.textContent='';
+  aGradeL.hidden=aView.value==='cohort';aCohortL.hidden=aView.value!=='cohort';
+  if(aView.value==='cohort'){drawCohort();return}
   const s1=S[g1]||{},s2=g2?(S[g2]||{}):null;
   if(aView.value==='time'){
     if(!s2){stacked(out,s1,mode,{label:gn(g1)});return}
@@ -188,7 +212,7 @@ function drawA(){const g=aGrade.value,mode=aMode.value,g1=aG1.value,g2=aG2.value
         const rc=b?el('rect',{x:x+1.5,y:B-h+1.5,width:w-3,height:Math.max(0,h-1.5),fill:'#fff',stroke:c,'stroke-width':3},svg):el('rect',{x,y:B-h,width:w,height:h,fill:c,stroke:'#000','stroke-width':1.6},svg);
         if(y===2021&&!b)el('rect',{x,y:B-h,width:w,height:h,fill:hp,'pointer-events':'none'},svg);
         if(!s2)txt(svg,x+w/2,B-h-4,Math.round(p),{'text-anchor':'middle','font-size':11});
-        hover(rc,`<b>${y}, grade ${g}: ${gn(b?g2:g1)}</b><br>${(mode==='2'?BNAME:LNAME)[i]}: ${f1(p)}<br>Students tested: ${fN(rr[0])}`)})}});
+        hover(rc,`<b>${y}, ${st}grade ${g}: ${gn(b?g2:g1)}</b><br>${(mode==='2'?BNAME:LNAME)[i]}: ${f1(p)}<br>Students tested: ${fN(rr[0])}`)})}});
   if(s2){const n=document.createElement('p');n.className='fine';n.style.gridColumn='1/-1';n.innerHTML=`Filled bars: ${gn(g1)}. Outlined bars: ${gn(g2)}.`;out.appendChild(n)}}
 
 /* ---------- school helpers ---------- */
@@ -255,14 +279,15 @@ function drawE(){const s=BYK[eSchool.value];if(!s)return;const has=schoolGroups(
 function start(data){D=data;loading.hidden=true;['figA','figB','figC','figD'].forEach(i=>document.getElementById(i).hidden=false);
   legendTop.innerHTML=legendHTML('4')+'<span>In the met / not met view, Levels 1–2 are red and Levels 3–4 blue.</span>';
   aGrade.innerHTML=Object.keys(D.state).map(g=>`<option value="${g}"${g==='11'?' selected':''}>${g}</option>`).join('');
-  const stG=()=>new Set(Object.keys(D.state[aGrade.value]));fillGroups(aG1,stG(),false);fillGroups(aG2,stG(),true);
+  aCohort.innerHTML=cohortList().map(([y3,lab])=>`<option value="${y3}"${y3===2015?' selected':''}>${lab}</option>`).join('');
+  const stG=()=>new Set(Object.keys(SUBJ()[aGrade.value]));fillGroups(aG1,stG(),false);fillGroups(aG2,stG(),true);
   const schG=new Set(Object.keys(D.schools.reduce((a,s)=>Object.assign(a,s[12]),{})));fillGroups(cG,schG,false);fillGroups(dG,schG,false);
   const yo=D.years.map(y=>`<option>${y}</option>`).join('');cYear.innerHTML=yo;cYear.value='2025';cCmp.innerHTML='<option value="">—</option>'+yo;cCmp.value='2019';
   dBy.innerHTML=BY.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');
   BYK={};D.schools.forEach(s=>BYK[keyOf(s)]=s);eList.innerHTML=D.schools.filter(s=>s[12]['1']&&s[12]['1'].length>=5).map(s=>`<option value="${keyOf(s).replace(/"/g,'&quot;')}">`).join('');
   eSchool.value=Object.keys(BYK).find(k=>k.startsWith('Berkeley High — Berkeley'))||Object.keys(BYK)[0];
-  aGrade.onchange=()=>{const a=aG1.value,b=aG2.value;fillGroups(aG1,stG(),false);fillGroups(aG2,stG(),true);aG1.value=stG().has(a)?a:'1';aG2.value=stG().has(b)?b:'';drawA()};
-  [aView,aG1,aG2,aMode].forEach(e=>e.onchange=drawA);[cMeas,cG,cYear,cCmp,cSet,cMin,cUnit].forEach(e=>e.onchange=drawC);
+  aGrade.onchange=aSubj.onchange=()=>{const a=aG1.value,b=aG2.value;fillGroups(aG1,stG(),false);fillGroups(aG2,stG(),true);aG1.value=stG().has(a)?a:'1';aG2.value=stG().has(b)?b:'';drawA()};
+  [aView,aCohort,aG1,aG2,aMode].forEach(e=>e.onchange=drawA);[cMeas,cG,cYear,cCmp,cSet,cMin,cUnit].forEach(e=>e.onchange=drawC);
   dBy.onchange=()=>{setupPick();drawD()};[dSplit,dP1,dP2,dP3,dCh,dG,dMode].forEach(e=>e.onchange=drawD);
   [eG1,eG2,eMode].forEach(e=>e.onchange=drawE);eSchool.addEventListener('change',drawE);eSchool.addEventListener('input',()=>{if(BYK[eSchool.value])drawE()});
   setupPick();drawA();drawC();drawD();drawE()}
