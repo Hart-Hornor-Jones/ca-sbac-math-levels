@@ -99,6 +99,7 @@ details p{margin:0 0 8px}
 <label>Show <select id="eMode"><option value="4">Four levels</option><option value="2">Met / not met</option></select></label>
 </div>
 <div class="panels two" id="eOut"></div>
+<p class="fine" id="eNote"></p>
 </figure>
 
 <details id="about">
@@ -113,6 +114,7 @@ details p{margin:0 0 8px}
 <h3>School results</h3>
 <p>The state does not publish results for a group of fewer than 11 testers at a school. Pooled results (the grouped-school chart) therefore leave out students in small groups. For all students this is under 1% of testers after 2016 (3% in 2015). For smaller groups it is larger: in 2019 the school rows cover 82% of Black, 77% of Filipino, 73% of multiracial, and 89% of English-learner 11th graders statewide, against 99% of Hispanic and 96% of White 11th graders.</p>
 <p>The three school figures show grade 11 math only; the school file holds no other grade or subject. When schools are pooled, each school counts in proportion to its number of tested students. The pooled all-student results match the statewide figures within 0.4 percentage points in every year.</p>
+<p>The one-school figure offers every student group the state reports for that school (28 groups, when all have published results) and can draw two groups side by side, one pair of bars per year. From the first year a school appears in the state file, every year without a published result for the chosen group is marked "Not reported": the state suppresses any result for fewer than 11 students, and the 2017, 2018, 2024 and 2025 files leave such rows out altogether, so a small school can be missing from a year entirely. It is a gap, not a zero; hovering it says whether the group's row was suppressed, absent, or the school had no row that year.</p>
 <p>The number of schools with published results changes from year to year as schools open, close and cross the 11-tester line. The "same schools both years" option removes this turnover. Between 2019 and 2025 it matters: schools that dropped out after 2019 had a median of 4% met, while schools new by 2025 had a median of 21%.</p>
 <h3>School characteristics</h3>
 <p>Unduplicated pupil percentage (UPP): the share of a school's students who are low-income (eligible for free or reduced-price meals), English learners, or foster youth, each student counted once. It is the state's school-funding measure. Here it is the school's average for 2016–17 through 2019–20. It is not a poverty rate.</p>
@@ -120,6 +122,7 @@ details p{margin:0 0 8px}
 <p>A–G completion: the share of each four-year graduating cohort that finished the course sequence required for UC and CSU admission, pooled over the classes of 2017–2019. School-years with known reporting errors in the state file are left out.</p>
 <p>District groupings use the district recorded in the state's school directory, so they include charter schools the district authorized. With charter schools left out, the pooled results for San Diego Unified and Fresno Unified match the state's own district totals within 0.2 points; Los Angeles Unified's district totals also include its affiliated charters.</p>
 <p>Thirds, quarters and fifths are cut so each holds about the same number of tested students, not the same number of schools. Schools missing a characteristic are left out of that grouping.</p>
+<p>Within-school gap: the share of students at Level 3 or 4 among not socioeconomically disadvantaged students minus the share among socioeconomically disadvantaged students at the same school, in percentage points, pooled over the years in which the school reports both groups. Schools that never report both groups are left out.</p>
 <p>Regions: Bay Area (Alameda, Contra Costa, Marin, Napa, San Francisco, San Mateo, Santa Clara, Solano, Sonoma); Sacramento area (Sacramento, Placer, El Dorado, Yolo, Sutter, Yuba); Central Coast (Monterey, San Benito, San Luis Obispo, Santa Barbara, Santa Cruz, Ventura); San Joaquin Valley (San Joaquin, Stanislaus, Merced, Madera, Fresno, Kings, Tulare, Kern); Inland Empire (Riverside, San Bernardino); San Diego and Imperial; Los Angeles County; Orange County; North State (the 16 counties north of the Sacramento area); Sierra and Eastern (Alpine, Amador, Calaveras, Inyo, Mariposa, Mono, Tuolumne).</p>
 <h3>Student groups</h3>
 <p>Groups are as defined by the state. "Economically disadvantaged" means eligible for free or reduced-price meals or neither parent a high school graduate. The number of economically disadvantaged 11th graders rose from 244,000 in 2022 to 269,000 in 2023 while total testers barely changed, so that group's trend across 2022–2023 partly reflects a change in who is counted. From 2022, some students are reported as neither male nor female, so the two gender groups do not always add to the total.</p>
@@ -149,30 +152,39 @@ function legendHTML(mode){const n=mode==='2'?BNAME:LNAME,c=mode==='2'?BIN:COL;re
 const gname=g=>g==='1'?'All students':D.names[g];
 
 /* group menus */
-const MENU=[["","1"],["Gender","3 4"],["Race and ethnicity","76 74 77 78 80 144 75 79"],["Economic status","31 111"],["Race and ethnicity, economically disadvantaged","202 200 204 206"],["Race and ethnicity, not economically disadvantaged","222 220 224 226"],["English proficiency","180 8 160"],["Parent education","90 91 92 93 94"],["Disability","128 99"]];
-const SHORT={"31":"Economically disadvantaged","111":"Not economically disadvantaged","8":"Reclassified fluent English proficient","160":"English learners","180":"English only","90":"Parent: not a high school graduate","91":"Parent: high school graduate","92":"Parent: some college","93":"Parent: college graduate","94":"Parent: graduate school","128":"Students with disabilities","99":"Students without disabilities","74":"Black","78":"Hispanic or Latino","144":"Two or more races","202":"Asian, econ. disadvantaged","200":"Black, econ. disadvantaged","204":"Hispanic, econ. disadvantaged","206":"White, econ. disadvantaged","222":"Asian, not econ. disadvantaged","220":"Black, not econ. disadvantaged","224":"Hispanic, not econ. disadvantaged","226":"White, not econ. disadvantaged","75":"American Indian or Alaska Native","79":"Native Hawaiian or Pacific Islander"};
-const gn=g=>g==='1'?'All students':(SHORT[g]||D.names[g]);
+const MENU=[["","1"],["Gender","3 4"],["Race and ethnicity","76 74 77 78 80 144 75 79"],["Economic status","31 111"],["Race and ethnicity, economically disadvantaged","202 200 204 206"],["Race and ethnicity, not economically disadvantaged","222 220 224 226"],["English proficiency","180 7 8 170 160 142 120"],["Parent education","90 91 92 93 94 121"],["Disability","128 99"]];
+const SHORT={"31":"Economically disadvantaged","111":"Not economically disadvantaged","8":"Reclassified fluent English proficient","160":"English learners","180":"English only","90":"Parent: not a high school graduate","91":"Parent: high school graduate","92":"Parent: some college","93":"Parent: college graduate","94":"Parent: graduate school","128":"Students with disabilities","99":"Students without disabilities","74":"Black","78":"Hispanic or Latino","144":"Two or more races","202":"Asian, econ. disadvantaged","200":"Black, econ. disadvantaged","204":"Hispanic, econ. disadvantaged","206":"White, econ. disadvantaged","222":"Asian, not econ. disadvantaged","220":"Black, not econ. disadvantaged","224":"Hispanic, not econ. disadvantaged","226":"White, not econ. disadvantaged","75":"American Indian or Alaska Native","79":"Native Hawaiian or Pacific Islander","7":"Initial fluent English proficient","170":"Ever English learners","142":"English learners, 12 months or more","120":"English learners, less than 12 months","121":"Parent: declined to state"};
+const gn=g=>g==='1'?'All students':(SHORT[g]||D.names[g]||(D.school_groups||{names:{}}).names[g]);
 function fillGroups(sel,allowed,blank){sel.innerHTML=(blank?'<option value="">—</option>':'')+MENU.map(([lab,gs])=>{const o=gs.split(' ').filter(g=>allowed.has(g)).map(g=>`<option value="${g}">${gn(g)}</option>`).join('');return o?(lab?`<optgroup label="${lab}">${o}</optgroup>`:o):''}).join('')}
 
 /* stacked columns over time */
-function stacked(container,series,mode,opt){ // series: {year:[n,L1..L4]}, or keyed by opt.cats[].k when categories are not years
+function stacked(container,series,mode,opt){ // series: {year:[n,L1..L4]}, or keyed by opt.cats[].k when categories are not years.
+  // With opt.pair=[labelA,labelB], series is [seriesA,seriesB] and every category gets two bars side by side.
+  // A category with no data draws c.gap (e.g. 'No test') when no bar has data; a bar whose c.nr (one per bar in pair mode) is set draws an explicit 'Not reported' gap, never a zero-height bar.
   opt=opt||{};const cats=opt.cats||ALLY.map(y=>({k:y,lab:opt.short?("'"+String(y).slice(2)):y,hatch:y===2021,gap:(y===2020&&!opt.short)?'No test':''}));
+  const pair=opt.pair,SER=pair?series:[series],labs=pair||[opt.label],nb=SER.length;
   const two=cats.some(c=>c.sub),W=opt.W||900,H0=opt.H||320,H=H0+(two?14:0),L=46,R=8,T=12,B=H0-28,svg=el('svg',{viewBox:`0 0 ${W} ${H}`},container),hp=hatch(svg);
   axisY(svg,L,B,T,100,20,'%');el('line',{x1:L,y1:B,x2:W-R,y2:B,stroke:'#000','stroke-width':2.6},svg);
-  const slot=(W-R-L)/cats.length,bw=slot*0.7,cols=mode==='2'?BIN:COL,names=mode==='2'?BNAME:LNAME,lines=[];
-  cats.forEach((c,j)=>{const x=L+j*slot+(slot-bw)/2,cx=x+bw/2;
+  const slot=(W-R-L)/cats.length,bw=nb===2?slot*0.36:slot*0.7,gp=nb===2?slot*0.04:0,cols=mode==='2'?BIN:COL,names=mode==='2'?BNAME:LNAME,lines=[];
+  cats.forEach((c,j)=>{const x0=L+j*slot+(slot-nb*bw-(nb-1)*gp)/2,cx=nb===2?L+j*slot+slot/2:x0+bw/2;
     txt(svg,cx,B+18,c.lab,{'text-anchor':'middle','font-size':opt.short?11:12});
     if(c.sub)txt(svg,cx,B+32,c.sub,{'text-anchor':'middle','font-size':11});
-    const r=series[c.k];if(!r){if(c.gap)txt(svg,cx,B-8,c.gap,{'text-anchor':'middle','font-size':opt.short?10:11});return}
-    const v=vals(r,mode),tot=v.reduce((a,b)=>a+b,0)||100;let acc=0;
-    v.forEach((p,i)=>{const pn=p/tot*100,y0=B-acc/100*(B-T),h=pn/100*(B-T);acc+=pn;
-      const rc=el('rect',{x,y:y0-h,width:bw,height:h,fill:cols[i],stroke:'#000','stroke-width':1.5},svg);
-      if(c.hatch)el('rect',{x,y:y0-h,width:bw,height:h,fill:hp,'pointer-events':'none'},svg);
-      if(!opt.short&&h>15)txt(svg,cx,y0-h/2+4,Math.round(p),{'text-anchor':'middle','font-size':11,style:'fill:'+((i===0||i===3||(mode==='2'&&i===1))?'#fff':'#000')});
-      hover(rc,`<b>${opt.label?opt.label+', ':''}${c.tip||c.k}</b><br>${names[i]}: ${f1(p)}<br>${opt.count?opt.count(r):'Students: '+fN(r[0])}`)});
-    lines.push([x,x+bw,B-vals(r,'2')[0]/tot*(B-T)])});
+    const rows=SER.map(s=>s[c.k]);
+    if(!rows.some(r=>r)&&c.gap){txt(svg,cx,B-8,c.gap,{'text-anchor':'middle','font-size':opt.short?10:11});return}
+    rows.forEach((r,b)=>{const x=x0+b*(bw+gp),bx=x+bw/2,label=labs[b];
+      if(!r){const nr=pair?(c.nr||[])[b]:c.nr;if(!nr)return;
+        if(pair||opt.short)txt(svg,bx+4,B-8,'Not reported',{'font-size':10,transform:`rotate(-90 ${bx+4} ${B-8})`});
+        else txt(svg,bx,B-8,'Not reported',{'text-anchor':'middle','font-size':11});
+        hover(el('rect',{x,y:T,width:bw,height:B-T,fill:'none','pointer-events':'all'},svg),`<b>${label?label+', ':''}${c.tip||c.k}</b><br>${nr}`);return}
+      const v=vals(r,mode),tot=v.reduce((a,b)=>a+b,0)||100;let acc=0;
+      v.forEach((p,i)=>{const pn=p/tot*100,y0=B-acc/100*(B-T),h=pn/100*(B-T);acc+=pn;
+        const rc=el('rect',{x,y:y0-h,width:bw,height:h,fill:cols[i],stroke:'#000','stroke-width':1.5},svg);
+        if(c.hatch)el('rect',{x,y:y0-h,width:bw,height:h,fill:hp,'pointer-events':'none'},svg);
+        if(!opt.short&&h>15)txt(svg,bx,y0-h/2+4,Math.round(p),{'text-anchor':'middle','font-size':11,style:'fill:'+((i===0||i===3||(mode==='2'&&i===1))?'#fff':'#000')});
+        hover(rc,`<b>${label?label+', ':''}${c.tip||c.k}</b><br>${names[i]}: ${f1(p)}<br>${opt.count?opt.count(r):'Students: '+fN(r[0])}`)});
+      lines.push([x,x+bw,B-vals(r,'2')[0]/tot*(B-T)])})});
   lines.forEach(m=>el('line',{x1:m[0]-3,y1:m[2],x2:m[1]+3,y2:m[2],stroke:'#000','stroke-width':3.2,'pointer-events':'none'},svg));
-  if(!Object.keys(series).length)txt(svg,(L+W)/2,(T+B)/2,'No published results',{'text-anchor':'middle','font-size':13});
+  if(!SER.some(s=>Object.keys(s).length))txt(svg,(L+W)/2,(T+B)/2,'No published results',{'text-anchor':'middle','font-size':13});
   return svg}
 function panel(parent,title){const div=document.createElement('div');div.innerHTML=`<div class="pt">${title}</div>`;parent.appendChild(div);return div}
 
@@ -246,15 +258,20 @@ function drawC(){const m=cMeas.value,g=cG.value,y=+cYear.value,cy=cCmp.value?+cC
   cNote.textContent=`${y}: ${A.length.toLocaleString()} schools, median ${med(A)}.`+(C?` ${cy} (dashed outline): ${C.length.toLocaleString()} schools, median ${med(C)}.`:'')}
 
 /* ---------- Figure 3: grouped schools ---------- */
-const BY=[["upp","Unduplicated pupil percentage (UPP)",6,"pct"],["inc","Census tract median household income",8,"usd"],["pov","Census tract poverty rate",9,"pct"],["ba","Census tract adults with a bachelor's degree",10,"pct"],["ag","A–G completion rate",7,"pct"],["region","Region",3,"cat"],["county","County",2,"pick"],["district","District",1,"pick"],["type","School type",4,"cat"],["charter","Charter or not",5,"cat"]];
+const BY=[["upp","Unduplicated pupil percentage (UPP)",6,"pct"],["inc","Census tract median household income",8,"usd"],["pov","Census tract poverty rate",9,"pct"],["ba","Census tract adults with a bachelor's degree",10,"pct"],["ag","A–G completion rate",7,"pct"],["region","Region",3,"cat"],["county","County",2,"pick"],["district","District",1,"pick"],["type","School type",4,"cat"],["charter","Charter or not",5,"cat"],["gap","Within-school gap in % met (not socioeconomically disadvantaged minus socioeconomically disadvantaged)",14,"pts"]];
+const GAPNOTE='The gap is the share of students at Level 3 or 4 among not socioeconomically disadvantaged students minus the share among socioeconomically disadvantaged students at the same school, in percentage points, pooled over the years the school reports both groups.';
+// Pooled over the years in which the school reports both groups; null when it never reports both.
+function gapOf(s){const a=s[12]['111'],b=s[12]['31'];if(!a||!b)return null;const ya=new Set(a.map(r=>r[0])),yb=new Set(b.map(r=>r[0]));
+  const met=rows=>{let n=0,m=0;rows.forEach(r=>{n+=r[1];m+=r[1]*(r[4]+r[5])});return n?m/n:null};
+  const ma=met(a.filter(r=>yb.has(r[0]))),mb=met(b.filter(r=>ya.has(r[0])));return ma==null||mb==null?null:ma-mb}
 const PICKDEF={county:["Los Angeles","Orange","San Diego"],district:["Los Angeles Unified","San Diego Unified","Fresno Unified"]};
-const fmtv=(v,k)=>k==='usd'?'$'+Math.round(v/1000)+'k':Math.round(v)+'%';
+const fmtv=(v,k)=>k==='usd'?'$'+Math.round(v/1000)+'k':k==='pts'?Math.round(v)+' pts':Math.round(v)+'%';
 function cuts(idx,q){const v=D.schools.filter(s=>s[idx]!=null&&s[12]['1']).map(s=>[s[idx],s[11]]).sort((a,b)=>a[0]-b[0]);const T=v.reduce((a,b)=>a+b[1],0);const c=[];let acc=0,k=1;v.forEach(([x,w])=>{acc+=w;while(k<q&&acc>=T*k/q){c.push(x);k++}});return c}
-function setupPick(){const b=BY.find(b=>b[0]===dBy.value),isPick=b[3]==='pick',num=b[3]==='pct'||b[3]==='usd';dSplitL.hidden=!num;[dP1L,dP2L,dP3L].forEach(l=>l.hidden=!isPick);
+function setupPick(){const b=BY.find(b=>b[0]===dBy.value),isPick=b[3]==='pick',num=b[3]==='pct'||b[3]==='usd'||b[3]==='pts';dSplitL.hidden=!num;[dP1L,dP2L,dP3L].forEach(l=>l.hidden=!isPick);
   if(isPick){const counts={};D.schools.forEach(s=>{if(s[12]['1']){const k=s[b[2]];counts[k]=(counts[k]||0)+s[11]}});const keys=Object.keys(counts).filter(k=>k&&k!=='null').sort();
     [dP1,dP2,dP3].forEach((sel,i)=>{sel.innerHTML=(i?'<option value="">—</option>':'')+keys.map(k=>`<option>${k}</option>`).join('');sel.value=PICKDEF[b[0]][i]||''})}}
 function drawD(){const b=BY.find(b=>b[0]===dBy.value),idx=b[2],kind=b[3],g=dG.value,mode=dMode.value;dOut.innerHTML='';const groups=[];
-  if(kind==='pct'||kind==='usd'){const q=+dSplit.value,c=cuts(idx,q),lo=[-Infinity,...c],hi=[...c,Infinity];
+  if(kind==='pct'||kind==='usd'||kind==='pts'){const q=+dSplit.value,c=cuts(idx,q),lo=[-Infinity,...c],hi=[...c,Infinity];
     const nm=q===3?['Lowest third','Middle third','Highest third']:q===4?['Lowest quarter','Second quarter','Third quarter','Highest quarter']:['Lowest fifth','Second fifth','Middle fifth','Fourth fifth','Highest fifth'];
     for(let i=0;i<q;i++)groups.push([nm[i],i===0?`under ${fmtv(hi[i],kind)}`:i===q-1?`${fmtv(lo[i],kind)} and over`:`${fmtv(lo[i],kind)} to ${fmtv(hi[i],kind)}`,s=>s[idx]!=null&&s[idx]>=lo[i]&&s[idx]<hi[i]])}
   else if(kind==='cat'){const vals=[...new Set(D.schools.map(s=>s[idx]).filter(v=>v))];const order={type:["Regular high school","Continuation high school","Alternative school of choice","K-12 school","Other (community day, court, special ed., etc.)"],charter:["Not charter","Charter"]}[b[0]]||vals.sort();order.filter(v=>vals.includes(v)).forEach(v=>groups.push([v,'',s=>s[idx]===v]))}
@@ -264,16 +281,27 @@ function drawD(){const b=BY.find(b=>b[0]===dBy.value),idx=b[2],kind=b[3],g=dG.va
   groups.forEach(([t,sub,fn])=>{const ch=dCh.value,list=D.schools.filter(s=>fn(s)&&(ch==='all'||(ch==='no'?s[5]!=='Charter':s[5]==='Charter'))),P=pool(list,g),ns=list.filter(s=>s[12][g]).length;
     const div=panel(dOut,`${t}${sub?' <small>('+sub+')</small>':''}<br><small>${ns.toLocaleString()} schools</small>`);
     stacked(div,P,mode,{W:380,H:270,short:true,label:t,count:r=>`Students: ${fN(r[0])}<br>Schools: ${r[5]}`})});
-  dNote.textContent=(miss&&kind!=='pick'?`${miss} schools without this characteristic are left out. `:'')+(g!=='1'?`Only schools that report at least 11 ${gn(g).toLowerCase()} testers are counted.`:'')}
+  dNote.textContent=(b[0]==='gap'?GAPNOTE+' ':'')+(miss&&kind!=='pick'?`${miss} schools without this characteristic are left out. `:'')+(g!=='1'?`Only schools that report at least 11 ${gn(g).toLowerCase()} testers are counted.`:'')}
 
 /* ---------- Figure 4: one school ---------- */
 const keyOf=s=>s[0]+' — '+s[1];let BYK={};
 function schoolGroups(s){return new Set(Object.keys(s[12]))}
+// s[13] (set at start): group code -> year -> students tested, for the school's suppressed results.
+// From the first year the school appears in the file, every year without a published result for the group is "not reported" (2020: no test).
+// The tooltip says which case it is: the group's row is kept but suppressed; the school has rows that year but none for the group; or the school has no row at all that year.
 function drawE(){const s=BYK[eSchool.value];if(!s)return;const has=schoolGroups(s);
   const k1=eG1.value,k2=eG2.value;fillGroups(eG1,has,false);fillGroups(eG2,has,true);eG1.value=has.has(k1)?k1:'1';eG2.value=has.has(k2)?k2:'';
-  eTitle.textContent=`${s[0]}, ${s[1]}`;eOut.innerHTML='';const g1=eG1.value,g2=eG2.value,mode=eMode.value;
-  if(!g2){eOut.className='';stacked(eOut,rowsFor(s,g1),mode,{label:gn(g1)})}
-  else{eOut.className='panels two';stacked(panel(eOut,gn(g1)),rowsFor(s,g1),mode,{W:460,H:330,short:true,label:gn(g1)});stacked(panel(eOut,gn(g2)),rowsFor(s,g2),mode,{W:460,H:330,short:true,label:gn(g2)})}}
+  eTitle.textContent=`${s[0]}, ${s[1]}`;eOut.innerHTML='';eOut.className='';const g1=eG1.value,g2=eG2.value,mode=eMode.value,sup=s[13]||{};
+  const r1=rowsFor(s,g1),r2=g2?rowsFor(s,g2):null,yrs=new Set();
+  Object.values(s[12]).forEach(a=>a.forEach(r=>yrs.add(D.years[r[0]])));Object.values(sup).forEach(o=>Object.keys(o).forEach(y=>yrs.add(+y)));const first=Math.min(...yrs);
+  const nr=(rows,g,y)=>{if(rows[y]||y===2020||y<first)return '';const t=(sup[g]||{})[y];return t!=null?`Not reported by the state: ${t} students tested, fewer than 11 results`:yrs.has(y)?'Not reported by the state: no published result for this group (fewer than 11 students)':'Not reported: the school has no row in the state file for this year (fewer than 11 students tested, or no grade 11 tested)'};
+  const cats=ALLY.map(y=>({k:y,lab:y,hatch:y===2021,gap:y===2020?'No test':'',nr:g2?[nr(r1,g1,y),nr(r2,g2,y)]:nr(r1,g1,y)}));
+  const anyNR=cats.some(c=>g2?c.nr.some(x=>x):c.nr);
+  if(!g2)stacked(eOut,r1,mode,{label:gn(g1),cats});
+  else stacked(eOut,[r1,r2],mode,{pair:[gn(g1),gn(g2)],cats});
+  const parts=[];if(g2)parts.push(`Left bar in each year: ${gn(g1)}. Right bar: ${gn(g2)}.`);
+  if(anyNR)parts.push('"Not reported" marks a year, from the first in which this school appears in the state file, with no published result for that group: fewer than 11 students, or no grade 11 tested. It is a gap, not a zero; hover it for which.');
+  eNote.textContent=parts.join(' ')}
 
 /* ---------- start ---------- */
 function start(data){D=data;loading.hidden=true;['figA','figB','figC','figD'].forEach(i=>document.getElementById(i).hidden=false);
@@ -281,9 +309,11 @@ function start(data){D=data;loading.hidden=true;['figA','figB','figC','figD'].fo
   aGrade.innerHTML=Object.keys(D.state).map(g=>`<option value="${g}"${g==='11'?' selected':''}>${g}</option>`).join('');
   aCohort.innerHTML=cohortList().map(([y3,lab])=>`<option value="${y3}"${y3===2015?' selected':''}>${lab}</option>`).join('');
   const stG=()=>new Set(Object.keys(SUBJ()[aGrade.value]));fillGroups(aG1,stG(),false);fillGroups(aG2,stG(),true);
-  const schG=new Set(Object.keys(D.schools.reduce((a,s)=>Object.assign(a,s[12]),{})));fillGroups(cG,schG,false);fillGroups(dG,schG,false);
   const yo=D.years.map(y=>`<option>${y}</option>`).join('');cYear.innerHTML=yo;cYear.value='2025';cCmp.innerHTML='<option value="">—</option>'+yo;cCmp.value='2019';
   dBy.innerHTML=BY.map(b=>`<option value="${b[0]}">${b[1]}</option>`).join('');
+  const SG=D.school_groups||{names:{},extra:[],suppressed:[]};
+  D.schools.forEach((s,i)=>{Object.assign(s[12],SG.extra[i]||{});const su={};for(const g in (SG.suppressed[i]||{})){su[g]={};SG.suppressed[i][g].forEach(a=>su[g][D.years[a[0]]]=a[1])}s[13]=su;s[14]=gapOf(s)});
+  const schG=new Set(Object.keys(D.schools.reduce((a,s)=>Object.assign(a,s[12]),{})));fillGroups(cG,schG,false);fillGroups(dG,schG,false);
   BYK={};D.schools.forEach(s=>BYK[keyOf(s)]=s);eList.innerHTML=D.schools.filter(s=>s[12]['1']&&s[12]['1'].length>=5).map(s=>`<option value="${keyOf(s).replace(/"/g,'&quot;')}">`).join('');
   eSchool.value=Object.keys(BYK).find(k=>k.startsWith('Berkeley High — Berkeley'))||Object.keys(BYK)[0];
   aGrade.onchange=aSubj.onchange=()=>{const a=aG1.value,b=aG2.value;fillGroups(aG1,stG(),false);fillGroups(aG2,stG(),true);aG1.value=stG().has(a)?a:'1';aG2.value=stG().has(b)?b:'';drawA()};
